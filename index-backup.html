@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Claude Code ワークショップ デモサイト集">
+    <title>AIWS Workshop Demos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================ */
+        /* TOGGLE SWITCH - Fixed Top Right */
+        /* ============================================ */
+        .toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .toggle-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 100px;
+            height: 40px;
+            background: #e0e0e0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.after {
+            background: #2d1b4e;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 92px;
+            height: 32px;
+            background: white;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            color: #667eea;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-switch.after .toggle-slider {
+            color: #ff6b35;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .toggle-container {
+                top: 10px;
+                right: 10px;
+                padding: 10px 16px;
+                gap: 8px;
+            }
+
+            .toggle-label {
+                font-size: 12px;
+            }
+
+            .toggle-switch {
+                width: 80px;
+                height: 36px;
+            }
+
+            .toggle-slider {
+                width: 72px;
+                height: 28px;
+                font-size: 10px;
+            }
+        }
+
+        /* ============================================ */
+        /* VERSION CONTROL */
+        /* ============================================ */
+        .before-version {
+            display: block;
+        }
+
+        .before-version.hidden {
+            display: none;
+        }
+
+        .after-version {
+            display: none;
+        }
+
+        .after-version.active {
+            display: block;
+        }
+
+        /* ============================================ */
+        /* BEFORE VERSION STYLES - Original Design */
+        /* ============================================ */
+
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body */
+        .before-version {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 2rem 1rem;
+        }
+
+        /* Container */
+        .before-version .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .before-version header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .before-version h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .before-version .subtitle {
+            font-size: 1.25rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* Demos Grid */
+        .before-version .demos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Demo Card */
+        .before-version .demo-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .before-version .demo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        .before-version .demo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .before-version .demo-icon {
+            font-size: 2rem;
+        }
+
+        .before-version .demo-card h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .before-version .demo-description {
+            color: #666;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Tags */
+        .before-version .demo-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .before-version .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Buttons */
+        .before-version .demo-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .before-version .btn {
+            flex: 1;
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .before-version .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .before-version .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .before-version .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .before-version .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Footer */
+        .before-version footer {
+            text-align: center;
+            color: white;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .before-version footer p {
+            margin: 0.5rem 0;
+        }
+
+        .before-version footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .before-version footer a:hover {
+            opacity: 0.8;
+        }
+
+        .before-version .footer-note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .before-version h1 {
+                font-size: 2rem;
+            }
+
+            .before-version .demos {
+                grid-template-columns: 1fr;
+            }
+
+            .before-version .demo-links {
+                flex-direction: column;
+            }
+        }
+
+        /* ============================================ */
+        /* AFTER VERSION STYLES - Skills Enhanced */
+        /* ============================================ */
+
+        .after-version {
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            background: #0f0a1e;
+            color: #e8e6f0;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        .after-version::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.08) 0%, transparent 70%);
+            transform: rotate(-15deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .after-version::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+            transform: rotate(25deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Noise Texture */
+        @keyframes noise {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            20% { transform: translate(-10%, 5%); }
+            30% { transform: translate(5%, -10%); }
+            40% { transform: translate(-5%, 15%); }
+            50% { transform: translate(-10%, 5%); }
+            60% { transform: translate(15%, 0); }
+            70% { transform: translate(0, 10%); }
+            80% { transform: translate(-15%, 0); }
+            90% { transform: translate(10%, 5%); }
+        }
+
+        .after-version .noise {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            pointer-events: none;
+            animation: noise 8s steps(10) infinite;
+            z-index: 1;
+        }
+
+        /* Container */
+        .after-version .after-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header */
+        .after-version .after-header {
+            margin-bottom: 5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .after-version .after-title-wrapper {
+            display: flex;
+            align-items: baseline;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .after-version .after-h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b35 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .after-version .after-emoji {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.3));
+        }
+
+        .after-version .after-subtitle {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 400;
+            color: #a8a3b8;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Decorative Line */
+        .after-version .after-decorative-line {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35 0%, transparent 100%);
+            margin-top: 1.5rem;
+        }
+
+        /* Demos Grid - Asymmetric */
+        .after-version .after-demos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 5rem;
+        }
+
+        /* Staggered Animation */
+        .after-version .after-demo-card {
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+
+        .after-version .after-demo-card:nth-child(1) { animation-delay: 0.1s; }
+        .after-version .after-demo-card:nth-child(2) { animation-delay: 0.2s; }
+        .after-version .after-demo-card:nth-child(3) { animation-delay: 0.3s; }
+        .after-version .after-demo-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Demo Card */
+        .after-version .after-demo-card {
+            background: rgba(24, 18, 43, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .after-version .after-demo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .after-version .after-demo-card:hover {
+            transform: translateY(-8px) rotate(0.5deg);
+            border-color: rgba(255, 107, 53, 0.3);
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.15);
+        }
+
+        .after-version .after-demo-card:hover::before {
+            opacity: 1;
+        }
+
+        .after-version .after-demo-header {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .after-version .after-demo-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.3));
+        }
+
+        .after-version .after-h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+        }
+
+        .after-version .after-demo-description {
+            color: #a8a3b8;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tags */
+        .after-version .after-demo-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .after-version .after-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ff6b35;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+        }
+
+        .after-version .after-tag:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: rgba(255, 107, 53, 0.4);
+            transform: scale(1.05);
+        }
+
+        /* Buttons */
+        .after-version .after-demo-links {
+            display: flex;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .after-version .after-btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.75rem;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.02em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .after-version .after-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .after-version .after-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .after-version .after-btn-primary {
+            background: linear-gradient(135deg, #ff6b35 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+        }
+
+        .after-version .after-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        .after-version .after-btn-secondary {
+            background: transparent;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+        }
+
+        .after-version .after-btn-secondary:hover {
+            background: rgba(255, 107, 53, 0.1);
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .after-version .after-footer {
+            text-align: center;
+            color: #a8a3b8;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        .after-version .after-footer p {
+            margin: 0.75rem 0;
+            font-size: 1rem;
+        }
+
+        .after-version .after-footer a {
+            color: #ff6b35;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease;
+            font-weight: 600;
+        }
+
+        .after-version .after-footer a:hover {
+            border-bottom-color: #ff6b35;
+        }
+
+        .after-version .after-footer-note {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .after-version {
+                padding: 5rem 1.5rem 3rem;
+            }
+
+            .after-version .after-header {
+                margin-bottom: 3rem;
+            }
+
+            .after-version .after-demos {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .after-version .after-demo-card {
+                padding: 2rem;
+            }
+
+            .after-version .after-demo-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toggle Switch -->
+    <div class="toggle-container">
+        <span class="toggle-label">🎨 デザイン比較</span>
+        <div class="toggle-switch" id="toggleSwitch" onclick="toggleVersion()">
+            <div class="toggle-slider">BEFORE</div>
+        </div>
+    </div>
+
+    <!-- BEFORE VERSION -->
+    <div class="before-version" id="beforeVersion">
+        <div class="container">
+            <header>
+                <h1>🎓 Claude Code ワークショップ</h1>
+                <p class="subtitle">デモサイト一覧</p>
+            </header>
+
+            <main class="demos">
+                <section class="demo-card">
+                    <div class="demo-header">
+                        <span class="demo-icon">👋</span>
+                        <h2>Hello World</h2>
+                    </div>
+                    <p class="demo-description">Phase1で作成するシンプルなデモページ</p>
+                    <div class="demo-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                    </div>
+                    <div class="demo-links">
+                        <a href="./hello-world/" class="btn btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/hello-world" class="btn btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+
+                <section class="demo-card">
+                    <div class="demo-header">
+                        <span class="demo-icon">✅</span>
+                        <h2>Todo App</h2>
+                    </div>
+                    <p class="demo-description">タスク管理ができるシンプルなTodoアプリ</p>
+                    <div class="demo-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">localStorage</span>
+                    </div>
+                    <div class="demo-links">
+                        <a href="./todo-app/" class="btn btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/todo-app" class="btn btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+
+                <section class="demo-card">
+                    <div class="demo-header">
+                        <span class="demo-icon">🚀</span>
+                        <h2>Landing Page</h2>
+                    </div>
+                    <p class="demo-description">プロダクト紹介用のランディングページ</p>
+                    <div class="demo-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">Tailwind CSS</span>
+                    </div>
+                    <div class="demo-links">
+                        <a href="./landing-page/" class="btn btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/landing-page" class="btn btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+
+                <section class="demo-card">
+                    <div class="demo-header">
+                        <span class="demo-icon">📝</span>
+                        <h2>Simple Blog</h2>
+                    </div>
+                    <p class="demo-description">記事一覧と詳細を表示する静的ブログ</p>
+                    <div class="demo-tags">
+                        <span class="tag">HTML</span>
+                        <span class="tag">CSS</span>
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">JSON</span>
+                    </div>
+                    <div class="demo-links">
+                        <a href="./simple-blog/" class="btn btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/simple-blog" class="btn btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+            </main>
+
+            <footer>
+                <p>🛠️ <a href="https://github.com/uskaidev/AIWS1022" target="_blank">ワークショップ資料リポジトリ</a></p>
+                <p class="footer-note">Claude Code Spec駆動開発ワークショップ - 2025</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- AFTER VERSION -->
+    <div class="after-version" id="afterVersion">
+        <div class="noise"></div>
+
+        <div class="after-container">
+            <header class="after-header">
+                <div class="after-title-wrapper">
+                    <span class="after-emoji">🎓</span>
+                    <h1 class="after-h1">Claude Code ワークショップ</h1>
+                </div>
+                <p class="after-subtitle">デモサイト一覧</p>
+                <div class="after-decorative-line"></div>
+            </header>
+
+            <main class="after-demos">
+                <section class="after-demo-card">
+                    <div class="after-demo-header">
+                        <span class="after-demo-icon">👋</span>
+                        <h2 class="after-h2">Hello World</h2>
+                    </div>
+                    <p class="after-demo-description">Phase1で作成するシンプルなデモページ</p>
+                    <div class="after-demo-tags">
+                        <span class="after-tag">HTML</span>
+                        <span class="after-tag">CSS</span>
+                    </div>
+                    <div class="after-demo-links">
+                        <a href="./hello-world/" class="after-btn after-btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/hello-world" class="after-btn after-btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+
+                <section class="after-demo-card">
+                    <div class="after-demo-header">
+                        <span class="after-demo-icon">✅</span>
+                        <h2 class="after-h2">Todo App</h2>
+                    </div>
+                    <p class="after-demo-description">タスク管理ができるシンプルなTodoアプリ</p>
+                    <div class="after-demo-tags">
+                        <span class="after-tag">HTML</span>
+                        <span class="after-tag">CSS</span>
+                        <span class="after-tag">JavaScript</span>
+                        <span class="after-tag">localStorage</span>
+                    </div>
+                    <div class="after-demo-links">
+                        <a href="./todo-app/" class="after-btn after-btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/todo-app" class="after-btn after-btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+
+                <section class="after-demo-card">
+                    <div class="after-demo-header">
+                        <span class="after-demo-icon">🚀</span>
+                        <h2 class="after-h2">Landing Page</h2>
+                    </div>
+                    <p class="after-demo-description">プロダクト紹介用のランディングページ</p>
+                    <div class="after-demo-tags">
+                        <span class="after-tag">HTML</span>
+                        <span class="after-tag">Tailwind CSS</span>
+                    </div>
+                    <div class="after-demo-links">
+                        <a href="./landing-page/" class="after-btn after-btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/landing-page" class="after-btn after-btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+
+                <section class="after-demo-card">
+                    <div class="after-demo-header">
+                        <span class="after-demo-icon">📝</span>
+                        <h2 class="after-h2">Simple Blog</h2>
+                    </div>
+                    <p class="after-demo-description">記事一覧と詳細を表示する静的ブログ</p>
+                    <div class="after-demo-tags">
+                        <span class="after-tag">HTML</span>
+                        <span class="after-tag">CSS</span>
+                        <span class="after-tag">JavaScript</span>
+                        <span class="after-tag">JSON</span>
+                    </div>
+                    <div class="after-demo-links">
+                        <a href="./simple-blog/" class="after-btn after-btn-primary">デモを見る</a>
+                        <a href="https://github.com/uskaidev/aiws-workshop-demos/tree/master/simple-blog" class="after-btn after-btn-secondary">コードを見る</a>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="after-footer">
+                <p>🛠️ <a href="https://github.com/uskaidev/AIWS1022" target="_blank">ワークショップ資料リポジトリ</a></p>
+                <p class="after-footer-note">Claude Code Spec駆動開発ワークショップ - 2025</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function toggleVersion() {
+            const beforeVersion = document.getElementById('beforeVersion');
+            const afterVersion = document.getElementById('afterVersion');
+            const toggleSwitch = document.getElementById('toggleSwitch');
+            const toggleSlider = toggleSwitch.querySelector('.toggle-slider');
+
+            if (beforeVersion.classList.contains('hidden')) {
+                // Switch to BEFORE
+                beforeVersion.classList.remove('hidden');
+                afterVersion.classList.remove('active');
+                toggleSwitch.classList.remove('after');
+                toggleSlider.textContent = 'BEFORE';
+            } else {
+                // Switch to AFTER
+                beforeVersion.classList.add('hidden');
+                afterVersion.classList.add('active');
+                toggleSwitch.classList.add('after');
+                toggleSlider.textContent = 'AFTER';
+            }
+        }
+    </script>
+</body>
+</html>

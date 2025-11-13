@@ -3,90 +3,710 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaskFlow - タスク管理をシンプルに</title>
+  <title>TaskFlow - Skills Before/After デモ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* === Toggle Switch Styles === */
+    .toggle-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .toggle-label {
+      color: white;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      display: block;
+      text-align: center;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 200px;
+      height: 50px;
+      background: #1a1f3a;
+      border-radius: 25px;
+      cursor: pointer;
+      border: 2px solid #ffd60a;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 92px;
+      height: 40px;
+      background: #ffd60a;
+      border-radius: 20px;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #0a0e27;
+    }
+
+    .toggle-switch.after .toggle-slider {
+      transform: translateX(100px);
+    }
+
+    /* === Before Styles (Tailwind-based) === */
+    .before-version {
+      display: block;
+    }
+
+    .before-version.hidden {
+      display: none;
+    }
+
+    /* === After Styles (Skills-based) === */
+    .after-version {
+      display: none;
+    }
+
+    .after-version.active {
+      display: block;
+    }
+
+    /* After Version Specific Styles */
+    .after-version * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .after-version {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: #0a0e27;
+      color: #e8eaed;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Noise Texture Background */
+    .after-version::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 214, 10, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(0, 217, 255, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Geometric Pattern */
+    .after-version::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .after-version header,
+    .after-version main,
+    .after-version footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Typography */
+    .after-version h1,
+    .after-version h2,
+    .after-version h3 {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Hero Section - Asymmetric Layout */
+    .after-hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .after-hero-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .after-hero-text h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .after-hero-text h1 .highlight {
+      color: #ffd60a;
+      position: relative;
+      display: inline-block;
+    }
+
+    .after-hero-text h1 .highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 0.1em;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #00d9ff;
+      animation: slideIn 0.6s ease-out 0.3s both;
+    }
+
+    .after-hero-text p {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: #a8b1bb;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .after-hero-cta {
+      display: inline-block;
+      padding: 1.2rem 2.5rem;
+      background: #ffd60a;
+      color: #0a0e27;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 3px solid #ffd60a;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .after-hero-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: #00d9ff;
+      transition: left 0.4s ease;
+      z-index: -1;
+    }
+
+    .after-hero-cta:hover::before {
+      left: 0;
+    }
+
+    .after-hero-cta:hover {
+      color: #0a0e27;
+      border-color: #00d9ff;
+    }
+
+    /* Hero Visual - Diagonal Grid */
+    .after-hero-visual {
+      position: relative;
+      height: 500px;
+      animation: fadeInRight 1s ease-out 0.3s both;
+    }
+
+    .after-hero-visual::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #ffd60a 0%, #00d9ff 100%);
+      opacity: 0.1;
+      transform: rotate(45deg);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .after-hero-grid {
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      width: 80%;
+      height: 80%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 1rem;
+      transform: rotate(10deg);
+    }
+
+    .after-grid-item {
+      background: #1a1f3a;
+      border: 1px solid rgba(255, 214, 10, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .after-grid-item:nth-child(2),
+    .after-grid-item:nth-child(5),
+    .after-grid-item:nth-child(7) {
+      background: linear-gradient(135deg, #1a1f3a 0%, rgba(255, 214, 10, 0.1) 100%);
+    }
+
+    .after-grid-item:hover {
+      border-color: #00d9ff;
+      transform: scale(1.05);
+    }
+
+    /* Features Section - Brutalist Cards */
+    .after-features {
+      padding: 8rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .after-features-header {
+      margin-bottom: 4rem;
+    }
+
+    .after-features-header h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      margin-bottom: 1rem;
+    }
+
+    .after-features-header p {
+      font-size: 1.2rem;
+      color: #a8b1bb;
+    }
+
+    .after-features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .after-feature-card {
+      background: #1a1f3a;
+      padding: 2.5rem;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .after-feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #ffd60a, #00d9ff);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .after-feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .after-feature-card:hover {
+      border-color: #00d9ff;
+      transform: translateY(-5px);
+    }
+
+    .after-feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .after-feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #ffd60a;
+    }
+
+    .after-feature-card p {
+      color: #a8b1bb;
+      line-height: 1.8;
+    }
+
+    /* CTA Section - Diagonal Layout */
+    .after-cta-section {
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #1a1f3a;
+      position: relative;
+      overflow: hidden;
+      border: 3px solid #ffd60a;
+    }
+
+    .after-cta-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: linear-gradient(135deg, rgba(255, 214, 10, 0.1), rgba(0, 217, 255, 0.1));
+      transform: rotate(45deg);
+    }
+
+    .after-cta-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .after-cta-content h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .after-cta-content p {
+      font-size: 1.2rem;
+      color: #a8b1bb;
+      margin-bottom: 2.5rem;
+    }
+
+    .after-cta-button {
+      display: inline-block;
+      padding: 1.2rem 3rem;
+      background: transparent;
+      color: #00d9ff;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border: 3px solid #00d9ff;
+      transition: all 0.3s ease;
+    }
+
+    .after-cta-button:hover {
+      background: #00d9ff;
+      color: #0a0e27;
+      transform: translateX(5px);
+    }
+
+    /* Footer */
+    .after-footer {
+      padding: 3rem 2rem;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .after-footer p {
+      color: #a8b1bb;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: rotate(45deg) translateY(0);
+      }
+      50% {
+        transform: rotate(45deg) translateY(-20px);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .after-hero-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .after-hero-visual {
+        height: 300px;
+      }
+
+      .after-features {
+        padding: 4rem 1rem;
+      }
+
+      .after-cta-section {
+        padding: 3rem 1.5rem;
+      }
+
+      .toggle-container {
+        top: 10px;
+        right: 10px;
+        padding: 1rem;
+      }
+
+      .toggle-switch {
+        width: 160px;
+        height: 40px;
+      }
+
+      .toggle-slider {
+        width: 72px;
+        height: 32px;
+        font-size: 0.7rem;
+      }
+
+      .toggle-switch.after .toggle-slider {
+        transform: translateX(80px);
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-  <!-- Hero Section -->
-  <header class="bg-gradient-to-br from-blue-50 to-indigo-100 py-20 px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-        タスク管理を<br class="md:hidden">もっとシンプルに
-      </h1>
-      <p class="text-xl md:text-2xl text-gray-600 mb-8">
-        TaskFlowなら、チームのタスクを一元管理。<br>
-        生産性を最大化し、目標達成をサポートします。
-      </p>
-      <a href="#cta" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
-        無料で始める →
-      </a>
+  <!-- Toggle Switch -->
+  <div class="toggle-container">
+    <span class="toggle-label">🎨 デザイン比較</span>
+    <div class="toggle-switch" id="toggleSwitch" onclick="toggleVersion()">
+      <div class="toggle-slider">BEFORE</div>
     </div>
-  </header>
+  </div>
 
-  <!-- Features Section -->
-  <main class="py-20 px-4">
-    <section id="features" class="max-w-6xl mx-auto">
-      <h2 class="text-4xl font-bold text-center text-gray-900 mb-4">
-        なぜTaskFlowなのか？
-      </h2>
-      <p class="text-center text-gray-600 mb-12 text-lg">
-        シンプルで強力な機能で、あなたのチームをサポートします
-      </p>
+  <!-- ==================== BEFORE VERSION (Tailwind) ==================== -->
+  <div class="before-version" id="beforeVersion">
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-br from-blue-50 to-indigo-100 py-20 px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          タスク管理を<br class="md:hidden">もっとシンプルに
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-600 mb-8">
+          TaskFlowなら、チームのタスクを一元管理。<br>
+          生産性を最大化し、目標達成をサポートします。
+        </p>
+        <a href="#cta" class="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-xl">
+          無料で始める →
+        </a>
+      </div>
+    </header>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Features Section -->
+    <main class="py-20 px-4 bg-gray-50">
+      <section id="features" class="max-w-6xl mx-auto">
+        <h2 class="text-4xl font-bold text-center text-gray-900 mb-4">
+          なぜTaskFlowなのか？
+        </h2>
+        <p class="text-center text-gray-600 mb-12 text-lg">
+          シンプルで強力な機能で、あなたのチームをサポートします
+        </p>
 
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          <!-- Feature 1 -->
+          <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
+            <div class="text-5xl mb-4">⚡</div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">高速で軽量</h3>
+            <p class="text-gray-600">
+              サクサク動作する快適なUI。複雑な操作は不要で、誰でもすぐに使いこなせます。
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
+            <div class="text-5xl mb-4">🔄</div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">リアルタイム同期</h3>
+            <p class="text-gray-600">
+              チームメンバー全員が常に最新の状態を共有。変更はリアルタイムで反映されます。
+            </p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
+            <div class="text-5xl mb-4">📊</div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">視覚的な進捗管理</h3>
+            <p class="text-gray-600">
+              カンバンボード、ガントチャート、カレンダー。お好みの方法でタスクを可視化。
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section id="cta" class="max-w-4xl mx-auto mt-20 bg-blue-600 rounded-2xl p-12 text-center text-white shadow-2xl">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+          今すぐTaskFlowを始めよう
+        </h2>
+        <p class="text-lg md:text-xl mb-8 text-blue-100">
+          14日間の無料トライアル。クレジットカード不要。
+        </p>
+        <a href="#" class="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg">
+          無料アカウントを作成 →
+        </a>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8 px-4 mt-20">
+      <div class="max-w-6xl mx-auto text-center">
+        <p>&copy; 2025 TaskFlow. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== AFTER VERSION (Skills-based) ==================== -->
+  <div class="after-version" id="afterVersion">
+    <!-- Hero Section -->
+    <header class="after-hero">
+      <div class="after-hero-content">
+        <div class="after-hero-text">
+          <h1>
+            タスク管理を<br>
+            もっと<span class="highlight">シンプル</span>に
+          </h1>
+          <p>
+            TaskFlowなら、チームのタスクを一元管理。生産性を最大化し、目標達成をサポートします。
+          </p>
+          <a href="#after-cta" class="after-hero-cta">無料で始める →</a>
+        </div>
+        <div class="after-hero-visual">
+          <div class="after-hero-grid">
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+            <div class="after-grid-item"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Features Section -->
+    <main class="after-features">
+      <div class="after-features-header">
+        <h2>なぜTaskFlowなのか？</h2>
+        <p>シンプルで強力な機能で、あなたのチームをサポートします</p>
+      </div>
+
+      <div class="after-features-grid">
         <!-- Feature 1 -->
-        <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
-          <div class="text-5xl mb-4">⚡</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-3">高速で軽量</h3>
-          <p class="text-gray-600">
+        <div class="after-feature-card">
+          <span class="after-feature-icon">⚡</span>
+          <h3>高速で軽量</h3>
+          <p>
             サクサク動作する快適なUI。複雑な操作は不要で、誰でもすぐに使いこなせます。
           </p>
         </div>
 
         <!-- Feature 2 -->
-        <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
-          <div class="text-5xl mb-4">🔄</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-3">リアルタイム同期</h3>
-          <p class="text-gray-600">
+        <div class="after-feature-card">
+          <span class="after-feature-icon">🔄</span>
+          <h3>リアルタイム同期</h3>
+          <p>
             チームメンバー全員が常に最新の状態を共有。変更はリアルタイムで反映されます。
           </p>
         </div>
 
         <!-- Feature 3 -->
-        <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
-          <div class="text-5xl mb-4">📊</div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-3">視覚的な進捗管理</h3>
-          <p class="text-gray-600">
+        <div class="after-feature-card">
+          <span class="after-feature-icon">📊</span>
+          <h3>視覚的な進捗管理</h3>
+          <p>
             カンバンボード、ガントチャート、カレンダー。お好みの方法でタスクを可視化。
           </p>
         </div>
+      </div>
+    </main>
 
+    <!-- CTA Section -->
+    <section id="after-cta" class="after-cta-section">
+      <div class="after-cta-content">
+        <h2>今すぐTaskFlowを始めよう</h2>
+        <p>
+          14日間の無料トライアル。クレジットカード不要。
+        </p>
+        <a href="#" class="after-cta-button">無料アカウントを作成 →</a>
       </div>
     </section>
 
-    <!-- CTA Section -->
-    <section id="cta" class="max-w-4xl mx-auto mt-20 bg-blue-600 rounded-2xl p-12 text-center text-white shadow-2xl">
-      <h2 class="text-3xl md:text-4xl font-bold mb-4">
-        今すぐTaskFlowを始めよう
-      </h2>
-      <p class="text-lg md:text-xl mb-8 text-blue-100">
-        14日間の無料トライアル。クレジットカード不要。
-      </p>
-      <a href="#" class="inline-block bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg">
-        無料アカウントを作成 →
-      </a>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-gray-400 py-8 px-4 mt-20">
-    <div class="max-w-6xl mx-auto text-center">
+    <!-- Footer -->
+    <footer class="after-footer">
       <p>&copy; 2025 TaskFlow. All rights reserved.</p>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
-  <script src="script.js"></script>
+  <script>
+    function toggleVersion() {
+      const beforeVersion = document.getElementById('beforeVersion');
+      const afterVersion = document.getElementById('afterVersion');
+      const toggleSwitch = document.getElementById('toggleSwitch');
+      const toggleSlider = toggleSwitch.querySelector('.toggle-slider');
+
+      if (beforeVersion.classList.contains('hidden')) {
+        // Switch to BEFORE
+        beforeVersion.classList.remove('hidden');
+        afterVersion.classList.remove('active');
+        toggleSwitch.classList.remove('after');
+        toggleSlider.textContent = 'BEFORE';
+      } else {
+        // Switch to AFTER
+        beforeVersion.classList.add('hidden');
+        afterVersion.classList.add('active');
+        toggleSwitch.classList.add('after');
+        toggleSlider.textContent = 'AFTER';
+      }
+    }
+  </script>
 </body>
 </html>
