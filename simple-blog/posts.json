@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "はじめての記事",
+    "date": "2025-11-13",
+    "category": "日記",
+    "summary": "ブログを始めました。これからよろしくお願いします。",
+    "content": "今日からブログを始めることにしました。\n\n日々の学びや気づきを書いていきたいと思います。\n\nよろしくお願いします！"
+  },
+  {
+    "id": 2,
+    "title": "Claude Codeの使い方",
+    "date": "2025-11-12",
+    "category": "技術",
+    "summary": "Claude Codeを使ってWeb開発をする方法を紹介します。",
+    "content": "Claude Codeは強力なAIアシスタントです。\n\nSpec駆動開発を使えば、効率的にWebアプリを作ることができます。\n\n仕様書（SPEC.md）を書いて、Claude Codeに実装してもらうだけ。\n\n非エンジニアでも高品質なアプリが作れます。"
+  },
+  {
+    "id": 3,
+    "title": "Vercelデプロイ手順",
+    "date": "2025-11-11",
+    "category": "技術",
+    "summary": "VercelでWebサイトを公開する手順を解説します。",
+    "content": "Vercelを使えば、GitHubと連携して簡単にデプロイできます。\n\n手順：\n1. GitHubにプッシュ\n2. Vercelで Import\n3. Deploy\n\nたったこれだけで、世界中に公開できます！\n\n無料プランでも十分使えるので、ぜひ試してみてください。"
+  }
+]
